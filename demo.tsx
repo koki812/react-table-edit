@@ -82,7 +82,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
-        initialValue={record[dataIndex]} // Set initial value to the current cell value
+        initialValue={record[dataIndex]}
         rules={[
           {
             required: true,
@@ -95,7 +95,21 @@ const EditableCell: React.FC<EditableCellProps> = ({
     );
   }
 
-  return <td {...restProps}>{childNode}</td>;
+  return (
+    <td {...restProps}>
+      {editing ? (
+        childNode
+      ) : (
+        <div
+          className="editable-cell-value-wrap"
+          style={{ paddingRight: 24 }}
+          onClick={toggleEdit}
+        >
+          {children}
+        </div>
+      )}
+    </td>
+  );
 };
 
 type EditableTableProps = Parameters<typeof Table>[0];
