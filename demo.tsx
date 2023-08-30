@@ -36,7 +36,7 @@ interface EditableCellProps {
   dataIndex: keyof Item;
   record: Item;
   handleSave: (record: Item) => void;
-  isEditing: boolean; // New prop for controlling editing state
+  isEditing: boolean;
 }
 
 const EditableCell: React.FC<EditableCellProps> = ({
@@ -78,10 +78,11 @@ const EditableCell: React.FC<EditableCellProps> = ({
   let childNode = children;
 
   if (editable && isEditing) {
-    childNode = editing ? (
+    childNode = (
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
+        initialValue={record[dataIndex]} // Set initial value to the current cell value
         rules={[
           {
             required: true,
@@ -91,14 +92,6 @@ const EditableCell: React.FC<EditableCellProps> = ({
       >
         <Input ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
-        onClick={toggleEdit} // Change to onClick to enter edit mode when clicked
-      >
-        {children}
-      </div>
     );
   }
 
@@ -160,23 +153,16 @@ const App: React.FC = () => {
       width: '50%',
       editable: true,
       render: (text: string, record: DataType) => (
-        <>
-          <span>
-            <EditableCell
-              title="name"
-              editable={true}
-              dataIndex="name"
-              record={record}
-              handleSave={handleSave}
-              isEditing={isEditing} // Pass the isEditing state
-            >
-              {text}
-            </EditableCell>
-            {dataSource.length >= 1 ? (
-              <Button onClick={() => handleDelete(record.key)}>删除</Button>
-            ) : null}
-          </span>
-        </>
+        <EditableCell
+          title="name"
+          editable={true}
+          dataIndex="name"
+          record={record}
+          handleSave={handleSave}
+          isEditing={isEditing}
+        >
+          {text}
+        </EditableCell>
       ),
     },
     {
